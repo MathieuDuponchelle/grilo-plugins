@@ -1,0 +1,10 @@
+<plugin>
+  <info>
+    <name>GStreamer Discoveries Provider</name>
+    <module>libgrlgstreamer</module>
+    <description>A plugin that discovers media on the filesystem with gstreamer</description>
+    <author>Mathieu Duponchelle</author>
+    <license>LGPL</license>
+    <site>http://www.opencreed.com</site>
+  </info>
+</plugin>

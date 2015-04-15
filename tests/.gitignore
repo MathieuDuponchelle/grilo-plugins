@@ -8,6 +8,7 @@ test_tmdb_missing_configuration
 test_tmdb_fast_resolution
 test_tmdb_fast_resolution_by_id
 test_tmdb_full_resolution
+test_gstreamer
 /dleyna/dbusmock/dleyna-server-mock.service
 *.pyc
 __pycache__

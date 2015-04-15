@@ -126,6 +126,10 @@ PKG_CHECK_MODULES(DMAP, libdmapsharing-3.0 >= 2.9.12, HAVE_DMAP=yes, HAVE_DMAP=n
 
 PKG_CHECK_MODULES(SQLITE, sqlite3, HAVE_SQLITE=yes, HAVE_SQLITE=no)
 
+PKG_CHECK_MODULES(GSTREAMER, gstreamer-1.0, HAVE_GSTREAMER=yes, HAVE_GSTREAMER=no)
+
+PKG_CHECK_MODULES(GST_PBUTILS, gstreamer-pbutils-1.0, HAVE_GST_PBUTILS="yes", HAVE_GST_PBUTILS="no")
+
 PKG_CHECK_MODULES(GDATA, libgdata >= 0.9.1, HAVE_GDATA=yes, HAVE_GDATA=no)
 
 PKG_CHECK_MODULES(LIBSOUP, libsoup-2.4, HAVE_LIBSOUP=yes, HAVE_LIBSOUP=no)
@@ -869,6 +873,49 @@ DEPS_METADATA_STORE_LIBS="$DEPS_LIBS $SQLITE_LIBS"
 AC_SUBST(DEPS_METADATA_STORE_LIBS)
 
 # ----------------------------------------------------------
+# BUILD GSTREAMER PLUGIN
+# ----------------------------------------------------------
+
+AC_ARG_ENABLE(gstreamer,
+        AC_HELP_STRING([--enable-gstreamer],
+                [enable GStreamer plugin (default: auto)]),
+        [
+                case "$enableval" in
+                     yes)
+                        if test "x$HAVE_GST_PBUTILS" = "xno"; then
+                           AC_MSG_ERROR([gstreamer-pbutils-1.0 not found, install it or use --disable-gstreamer])
+                        fi
+                        if test "x$HAVE_GOM" = "xno"; then
+                           AC_MSG_ERROR([gom-1.0 not found, install it or use --disable-bookmarks])
+                        fi
+                        ;;
+                esac
+        ],
+        [
+                if test "x$HAVE_GST_PBUTILS" = "xyes" -a "x$HAVE_GOM" = "xyes"; then
+                  enable_gstreamer=yes
+                else
+                  enable_gstreamer=no
+                fi
+        ])
+
+AM_CONDITIONAL([GSTREAMER_PLUGIN], [test "x$enable_gstreamer" = "xyes"])
+GRL_PLUGINS_ALL="$GRL_PLUGINS_ALL gstreamer"
+if test "x$enable_gstreamer" = "xyes"
+then
+	GRL_PLUGINS_ENABLED="$GRL_PLUGINS_ENABLED gstreamer"
+fi
+
+GSTREAMER_PLUGIN_ID="grl-gstreamer"
+AC_SUBST(GSTREAMER_PLUGIN_ID)
+AC_DEFINE_UNQUOTED([GSTREAMER_PLUGIN_ID], ["$GSTREAMER_PLUGIN_ID"], [GStreamer plugin ID])
+
+DEPS_GSTREAMER_CFLAGS="$DEPS_CFLAGS $GSTREAMER_CFLAGS $GST_PBUTILS_CFLAGS $GOM_CFLAGS"
+AC_SUBST(DEPS_GSTREAMER_CFLAGS)
+DEPS_GSTREAMER_LIBS="$DEPS_LIBS $GSTREAMER_LIBS $GST_PBUTILS_LIBS $GOM_LIBS"
+AC_SUBST(DEPS_GSTREAMER_LIBS)
+
+# ----------------------------------------------------------
 # BUILD VIMEO PLUGIN
 # ----------------------------------------------------------
 
@@ -1425,6 +1472,7 @@ AC_CONFIG_FILES([
   src/flickr/Makefile
   src/freebox/Makefile
   src/gravatar/Makefile
+  src/gstreamer/Makefile
   src/jamendo/Makefile
   src/lastfm-albumart/Makefile
   src/local-metadata/Makefile
@@ -1448,6 +1496,7 @@ AC_CONFIG_FILES([
   tests/bliptv/Makefile
   tests/dleyna/Makefile
   tests/dleyna/dbusmock/dleyna-server-mock.service
+  tests/gstreamer/Makefile
   tests/lastfm-albumart/Makefile
   tests/local-metadata/Makefile
   tests/lua-factory/Makefile

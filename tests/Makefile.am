@@ -45,6 +45,13 @@ if VIMEO_PLUGIN
 SUBDIRS += vimeo
 endif
 
+# We need the filesystem plugin to provide us with some media
+if FILESYSTEM_PLUGIN
+if GSTREAMER_PLUGIN
+SUBDIRS += gstreamer
+endif
+endif
+
 DIST_SUBDIRS =    \
    apple-trailers \
    bliptv         \

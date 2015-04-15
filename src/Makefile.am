@@ -114,9 +114,13 @@ if OPENSUBTITLES_PLUGIN
 SUBDIRS += opensubtitles
 endif
 
+if GSTREAMER_PLUGIN
+SUBDIRS += gstreamer
+endif
+
 DIST_SUBDIRS = \
-   apple-trailers bliptv bookmarks dleyna dmap filesystem flickr freebox gravatar jamendo \
-   lastfm-albumart local-metadata lua-factory magnatune metadata-store opensubtitles \
+   apple-trailers bliptv bookmarks dleyna dmap filesystem flickr freebox gravatar gstreamer \
+   jamendo lastfm-albumart local-metadata lua-factory magnatune metadata-store opensubtitles \
    optical-media pocket podcasts raitv shoutcast thetvdb tmdb tracker vimeo youtube
 
 MAINTAINERCLEANFILES =	\
